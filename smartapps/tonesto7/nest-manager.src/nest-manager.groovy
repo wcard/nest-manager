@@ -221,7 +221,7 @@ def authPage() {
 			section(""){
 				paragraph "Tap 'Login to Nest' below to authorize SmartThings to your Nest Account.\n\nAfter login you will be taken to the 'Works with Nest' page. Read the info and if you 'Agree' press the 'Accept' button."
 				paragraph "❖ FYI: Please use the parent Nest account, Nest Family member accounts will not work correctly", state: "complete"
-				href url: "https://accounts.google.com/signin/oauth/oauthchooseaccount?client_id=733249279899-44tchle2kaa9afr5v9ov7jbuojfr9lrq.apps.googleusercontent.com&as=Rmz8rv3n3v5Yv1k2FMDGIA&destination=https%3A%2F%2Fhome.nest.com&approval_state=!ChREVjNHX20wMjZabEpoTUppM3hQThIfczRocDNxTFBSTjhTd0ktM2lWMU9TaWRYR2VjejR4WQ%E2%88%99AJDr988AAAAAXcCc4J4Psc2dFyFVnWCRtV6ze7_HZRAE&oauthgdpr=1&oauthriskyscope=1&xsrfsig=ChkAeAh8T7iiY9NvNRPv9pIhZH2A29RhsYTWEg5hcHByb3ZhbF9zdGF0ZRILZGVzdGluYXRpb24SBXNvYWN1Eg9vYXV0aHJpc2t5c2NvcGU&flowName=GeneralOAuthFlow", style:"embedded", required: true, title: "Login to Nest", description: description
+				href url: redirectURL, style:"embedded", required: true, title: "Login to Nest", description: description
 			}
 			devPageFooter("authLoadCnt", execTime)
 		}
@@ -7389,8 +7389,7 @@ def oauthInitUrl() {
 		state: atomicState?.oauthInitState,
 		redirect_uri: callbackUrl //"https://graph.api.smartthings.com/oauth/callback"
 	]
-	//redirect(location: "https://home.nest.com/login/oauth2?${toQueryString(oauthParams)}")
-    redirect (location: "https://accounts.google.com/signin/oauth/oauthchooseaccount?client_id=733249279899-44tchle2kaa9afr5v9ov7jbuojfr9lrq.apps.googleusercontent.com&as=Rmz8rv3n3v5Yv1k2FMDGIA&destination=https%3A%2F%2Fhome.nest.com&approval_state=!ChREVjNHX20wMjZabEpoTUppM3hQThIfczRocDNxTFBSTjhTd0ktM2lWMU9TaWRYR2VjejR4WQ%E2%88%99AJDr988AAAAAXcCc4J4Psc2dFyFVnWCRtV6ze7_HZRAE&oauthgdpr=1&oauthriskyscope=1&xsrfsig=ChkAeAh8T7iiY9NvNRPv9pIhZH2A29RhsYTWEg5hcHByb3ZhbF9zdGF0ZRILZGVzdGluYXRpb24SBXNvYWN1Eg9vYXV0aHJpc2t5c2NvcGU&flowName=GeneralOAuthFlow")
+	redirect(location: "https://home.nest.com/login/oauth2?${toQueryString(oauthParams)}")
 }
 
 def callback() {
@@ -7408,8 +7407,7 @@ def callback() {
 				client_secret: clientSecret(),
 				grant_type: "authorization_code",
 			]
-			def tokenUrl = "https://accounts.google.com/signin/oauth/oauthchooseaccount?client_id=733249279899-44tchle2kaa9afr5v9ov7jbuojfr9lrq.apps.googleusercontent.com&as=Rmz8rv3n3v5Yv1k2FMDGIA&destination=https%3A%2F%2Fhome.nest.com&approval_state=!ChREVjNHX20wMjZabEpoTUppM3hQThIfczRocDNxTFBSTjhTd0ktM2lWMU9TaWRYR2VjejR4WQ%E2%88%99AJDr988AAAAAXcCc4J4Psc2dFyFVnWCRtV6ze7_HZRAE&oauthgdpr=1&oauthriskyscope=1&xsrfsig=ChkAeAh8T7iiY9NvNRPv9pIhZH2A29RhsYTWEg5hcHByb3ZhbF9zdGF0ZRILZGVzdGluYXRpb24SBXNvYWN1Eg9vYXV0aHJpc2t5c2NvcGU&flowName=GeneralOAuthFlow"
-            //"https://api.home.nest.com/oauth2/access_token?${toQueryString(tokenParams)}"
+			def tokenUrl = "https://api.home.nest.com/oauth2/access_token?${toQueryString(tokenParams)}"
 			httpPost(uri: tokenUrl) { resp ->
 				atomicState.authToken = resp?.data.access_token
 				if(atomicState?.authToken) {
